@@ -4,51 +4,67 @@ set -e          # script stops on error
 set -u          # error if undefined variable
 set -o pipefail # script fails if piped command fails
 
-__version='Ren 1.0'
+__name='ren'
+__version='Ren version 1.0'
 
 function show_usage() {
-    echo "Usage: $0 [ -n ] perlexpr files"
+cat << EOF
+Usage:
+    $__name [ -h|-v ] [ -n ] perlexpr files
+
+Options:
+    -n, --nono
+        Print names of files to be renamed, but don't rename.
+
+    -h, --help
+        Print synopsis, options and examples.
+
+    -v, --version
+        Show version number.
+
+Examples:
+    ren 's/(.*)/clipart-[C].png/' *.png
+    ren 's/(.*)\.(.*)/\$1-[C:5].\$2/' *.*
+
+Full documentation at: https://github.com/linogefly/ren
+EOF
 }
 
 function show_version() {
-    echo "Version: $__version"
+    echo "$__version"
 }
 
 function parse_args() {
-    # Read options
-    while getopts 'nv' opt; do
-        case "$opt" in
-        n)
-            renameOptions+=(-n)
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+        -h | --help)
+            show_usage
+            exit 0
             ;;
-        v)
+        -v | --version)
             show_version
             exit 0
             ;;
-        *)
-            show_usage
+        -n | --dry-run)
+            renameOptions+=(-n)
+            shift
+            ;;
+        -* | --*)
+            echo "Unknown option $1"
             exit 1
+            ;;
+        *)
+            # First non option argument is "perlexpr"
+            if [ -z "$perlexpr" ]; then
+                perlexpr="$1"
+                shift
+            else # All upcoming non option arguments are files to process
+                files+=("$1")
+                shift
+            fi
             ;;
         esac
     done
-    shift "$(($OPTIND - 1))"
-
-    # Read "perlexpr" argument
-    if [ -z "$1" ]; then
-        show_usage
-        exit 1
-    else
-        perlexpr="$1"
-        shift
-    fi
-
-    # Read "files" argument
-    if [ -z "$1" ]; then
-        show_usage
-        exit 1
-    else
-        files=("$@")
-    fi
 }
 
 # $1: perlexpr

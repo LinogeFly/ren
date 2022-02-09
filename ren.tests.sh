@@ -23,6 +23,7 @@ tearDown() {
 
 test_should_not_rename_when_dry_run_argument_is_set() {
     ./$script -n 's/1/2/' "$tempDir/file" > /dev/null
+    ./$script --nono 's/1/2/' "$tempDir/file" > /dev/null
 
     assertTrue '[ -f "$tempDir/file" ]'
 }
