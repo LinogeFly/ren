@@ -1,6 +1,6 @@
 # Ren
 
-Bash script for renaming multiple files.
+Bash script for renaming multiple files in Linux.
 
 This script is mainly about learning bash command language, combined with a benefit of getting a useful tool for me in the process.
 
@@ -50,7 +50,7 @@ clipart-cat-4.png
 To do that, we run `ren` script like this:
 
 ```
-ren 's/(.*)\.png/clipart-cat-[C].png/' *.png
+ren 's/(.*)/clipart-cat-[C].png/' *.png
 ```
 
 The key part here is `[C]`, which is the counter placeholder. It gets replaced during renaming with the sequential number of a file.
