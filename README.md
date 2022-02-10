@@ -50,7 +50,7 @@ clipart-cat-4.png
 To do that, we run `ren` script like this:
 
 ```
-ren 's/(.*)/clipart-cat-[C].png/' *.png
+ren 's/.*/clipart-cat-[C].png/' *.png
 ```
 
 The key part here is `[C]`, which is the counter placeholder. It gets replaced during renaming with the sequential number of a file.

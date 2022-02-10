@@ -8,7 +8,7 @@ __name='ren'
 __version='Ren version 1.0'
 
 function show_usage() {
-cat << EOF
+    cat <<EOF
 Usage:
     $__name [ -h|-v ] [ -n ] perlexpr files
 
@@ -23,7 +23,7 @@ Options:
         Show version number.
 
 Examples:
-    ren 's/(.*)/clipart-[C].png/' *.png
+    ren 's/.*/clipart-[C].png/' *.png
     ren 's/(.*)\.(.*)/\$1-[C:5].\$2/' *.*
 
 Full documentation at: https://github.com/linogefly/ren
@@ -35,7 +35,7 @@ function show_version() {
 }
 
 function parse_args() {
-    while [[ $# -gt 0 ]]; do
+    while [ $# -gt 0 ]; do
         case $1 in
         -h | --help)
             show_usage
@@ -101,7 +101,7 @@ function inject_counter() {
     echo "${1/"$placeholder"/"$counter"}"
 }
 
-function run() {
+function main() {
     # Default settings
     local perlexpr=''
     local files=()
@@ -117,4 +117,4 @@ function run() {
     done
 }
 
-run "$@"
+main "$@"

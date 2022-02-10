@@ -42,7 +42,7 @@ test_should_substitute_whole_filename() {
     assertTrue '[ -f "$tempDir/file with spaces-new" ]'
 }
 
-test_should_rename_multiples_files_in_a_folder() {
+test_should_rename_all_filenames_that_match_pathname_pattern() {
     ./$script 's/(.*)/$1-new/' $tempDir/*
 
     assertTrue '[ -f "$tempDir/file-new" ]'
@@ -56,7 +56,7 @@ test_should_add_counter_to_filename() {
     assertTrue '[ -f "$tempDir/file with spaces-2" ]'
 }
 
-test_should_add_counter_to_multiples_files_in_a_folder() {
+test_should_add_counter_to_all_filenames_that_match_pathname_pattern() {
     ./$script 's/(.*)/$1-[C]/' $tempDir/*
 
     assertTrue '[ -f "$tempDir/file-1" ]'
