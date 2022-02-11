@@ -74,6 +74,8 @@ The counter placeholder can include all of the described options at the same tim
 - [ ] Make it possible for a counter placeholder to appear multiple times.
 - [ ] Counter placeholder should only be replaced if included in the last part of the expression. This is fine `'s/a/b[C]/'`, but this is not `'s/a[C]/b/'`.
 - [ ] If counter placeholder is not present in the expression, we should not rename files one by one. Instead, we need rename them all at once by running `rename` program with passed the list of files and the expression to it.
+- [ ] Error handling for invalid counter placeholder format.
+- [ ] Add standard input support (`stdin`).
 - [x] Fix the issue with arguments being position sensitive. For example, `ren -n 's/a/b/'` works, but `ren 's/a/b/' -n` does not.
 - [x] Add `--help` option support.
 - [x] Add `--version` option support.
