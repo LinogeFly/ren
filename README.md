@@ -1,22 +1,22 @@
 # Ren
 
-Bash script for renaming multiple files in Linux.
+Ren is a bash script for renaming multiple files in Linux. It is inspired by [Multi-Rename Tool](https://www.ghisler.ch/wiki/index.php?title=Multi-rename_tool) that comes with Windows only program called [Total Commander](https://www.ghisler.com/).
 
-This script is mainly about learning bash command language, combined with a benefit of getting a useful tool for me in the process.
+The script is mainly a practical exercise for me to learn bash command language, combined with a benefit of getting a useful tool in the process.
 
-## Introduction
+## Description
 
-The functionality of the script is inspired by [Multi-Rename Tool](https://www.ghisler.ch/wiki/index.php?title=Multi-rename_tool) that comes with Windows only program called [Total Commander](https://www.ghisler.com/).
+Ren renames supplied filenames according to the specified rule. The rule is a Perl substitution regular expression operator. It describes what parts of the filenames to rename and how.
 
-Internally, Ren uses [rename](https://manpages.debian.org/stretch/rename/rename.1.en.html) program for multi-renaming files that takes a Perl expression as a rule on how to rename files supplied as a argument. If you are familiar with [rename](https://manpages.debian.org/stretch/rename/rename.1.en.html) program then Ren will be very easy to get a hang of.
+Ren pretty much repeats [rename](https://manpages.debian.org/stretch/rename/rename.1.en.html) program by Larry Wall for multi-renaming files, except it allows to include a counter, or a sequential number in the other words, in filenames. The way it works is that the Perl substitution expression can contain the counter placeholder `[C]`, which then gets replaced with the actual counting number of the file when multiple files are renamed.
 
-What Ren does, on top of [rename](https://manpages.debian.org/stretch/rename/rename.1.en.html) program, is that it adds a possibility to use a counter placeholder in the expression argument. During renaming, all files get the placeholder replaced with the counter, or the sequential number of a file.
+[Rename](https://manpages.debian.org/stretch/rename/rename.1.en.html) program is great on its own and can be used as is, but the need of having a counter in the filename when renaming multiple files is why we have Ren here.
 
 ## Installation
 
-Make sure that [rename](https://manpages.debian.org/stretch/rename/rename.1.en.html) program by Larry Wall is installed on your system. It comes pre-installed in most Debian based distributions.
+First, make sure that [rename](https://manpages.debian.org/stretch/rename/rename.1.en.html) program is installed on your system. It comes pre-installed in most Debian based distributions.
 
-Run the following commands in the terminal:
+Then run the following commands in the terminal to install Ren:
 
 ```
 git clone https://github.com/LinogeFly/ren &&
@@ -25,11 +25,13 @@ chmod u+x ~/bin/ren &&
 rm -rf ren
 ```
 
-## Usage
+## Quick start
 
-For example, let's say we have multiple clip-art cat images downloaded from all over the places. We want to organize them a little bit by giving all the files a certain name plus an index.
+Let's learn how to include a counter in filenames with a simple example.
 
-Let's say we want this files:
+Imagine we have a bunch of files we want to rename. For example, a folder full of clip-art cat images downloaded from different places. We want to organize them a little by renaming the files so that each filename consists of a certain name plus a numeric index.
+
+Let's say we got files like this:
 
 ```
 xcgLxzxki.png
@@ -38,7 +40,7 @@ hohRowJ_cat-cartoon-clip-art-cartoon-cute-cat-clipart.png
 13488685211757.png
 ```
 
-To look like this:
+And we want them to look like this:
 
 ```
 clipart-cat-1.png
@@ -47,50 +49,108 @@ clipart-cat-3.png
 clipart-cat-4.png
 ```
 
-To do that, we run `ren` script like this:
+The following simple command will do the renaming:
 
-```
+```shell
 ren 's/.*/clipart-cat-[C].png/' *.png
 ```
 
-The key part here is `[C]`, which is the counter placeholder. It gets replaced during renaming with the sequential number of a file.
+As you can see Ren is called with two arguments. The expression `'s/.*/clipart-cat-[C].png/'` describes the rule on how to rename files, and `*.png` wildcard pattern tells to rename all .png files in the folder. The expression is a Perl substitution regular expression operator that contains `[C]` substring. The substring is the counter placeholder that defines where to include the counter in filenames.
 
-### Dry run
+## Usage
 
-To run the script in a dry run mode use `-n` option argument.
+The syntax of the script:
 
-### Counter placeholder formats
+```shell
+ren [ -h|-v ] [ -n ] perlexpr files
+```
 
-In addition to default `[C]` format, the counter placeholder can include options.
+### Options
 
-- `[C10]` format includes **Start at** option of 10.
-- `[C+5]` format includes **Step by** option of 5.
-- `[C:3]` format includes **Digits width** option of 3.
+```
+-n, --dry-run        Print names of files to be renamed,
+                     but don't rename.
+-h, --help           Print synopsis, options and examples.
+-v, --version        Print version number.
+```
 
-The counter placeholder can include all of the described options at the same time, for example `[C10+5:3]`.
+### Perl expression argument
+
+Specified as the first argument. The argument is a Perl substitution regular expression operator. The basic form of the operator is:
+
+```
+s/PATTERN/REPLACEMENT/
+```
+
+The PATTERN is the regular expression for the text that we are looking for in the filename.
+
+The REPLACEMENT is a specification for the text or regular expression that we want to use to replace the found text with. For example, we can replace all occurrences of **dog** in the filename with **cat** using `s/cat/dog/` regular expression.
+
+The REPLACEMENT can also contain the counter placeholder `[C]`, which adds a sequential number of the file to the filename.
+
+To include square bracket characters `[` and `]` in the REPLACEMENT, use a forward slash `\` character to escape the brackens, like `\[` and `\]`.
+
+### Files argument
+
+Specified as the second argument. The argument is a filename, a list of filenames or a glob wildcard pattern of file that need to be renamed.
+
+## Counter placeholder
+
+The basic form of the counter placeholder is `[C]`. It adds a sequential number of the file to the filename with the default parameters. By default counting starts at 1, with the step of 1 and without formatting. The default parameters can be changed when using the counter placeholder.
+
+- **Start at** parameter sets a starting number for the counter. Can be defined using `[CN]` format, where N is the starting number for the counter.
+
+- **Step by** parameter sets the counter step. Can be defined using `[C+S]` format, where S is the counter step value.
+
+- **Digits width** parameter formats the counter by setting a fixed width. Can be defined using `[C:W]` format, where W is the counter width.
+
+### Examples
+
+As an example, let's say we have files like this:
+
+```
+pussy-cat.jpg
+good-boi-doggo-doggo.jpg
+nasty-little-ferret.jpg
+```
+
+Then running `ren 's/.*/pet-[C10].jpg/' *.jpg` command with **start at** parameter set to 10 will rename files into this:
+
+```
+pet-10.jpg
+pet-11.jpg
+pet-12.jpg
+```
+
+Running `ren 's/.*/pet-[C+5].jpg/' *.jpg` command with **step by** parameter set to 5 will rename files into this:
+
+```
+pet-1.jpg
+pet-6.jpg
+pet-11.jpg
+```
+
+Running `ren 's/.*/pet-[C:3].jpg/' *.jpg` command with **digits width** parameter set to 3 will rename files into this:
+
+```
+pet-001.jpg
+pet-002.jpg
+pet-003.jpg
+```
+
+Also all parameters can be set at the same time, for example `[C10+5:3]`.
 
 ## To-do
 
-- [ ] Make it possible for a counter placeholder to appear multiple times.
-- [ ] Counter placeholder should only be replaced if included in the last part of the expression. This is fine `'s/a/b[C]/'`, but this is not `'s/a[C]/b/'`.
-- [ ] If counter placeholder is not present in the expression, we should not rename files one by one. Instead, we need rename them all at once by running `rename` program with passed the list of files and the expression to it.
-- [ ] Error handling for invalid counter placeholder format.
 - [ ] Add standard input support (`stdin`).
-- [x] Fix the issue with arguments being position sensitive. For example, `ren -n 's/a/b/'` works, but `ren 's/a/b/' -n` does not.
-- [x] Add `--help` option support.
-- [x] Add `--version` option support.
-- [x] Counter placeholder should not be case sensitive.
-- [x] Add **Start at** option support.
-- [x] Add **Step by** option support.
-- [x] Add **Digits width** option support.
-- [x] Add support for file expansion. Instead of passing a list of files it should be possible to pass a pattern with wildcards. For example, `*.bak`.
+- [ ] Add progress bar in case if we run `rename` separately for each file.
 
 ## Running tests
 
 Make sure you have [shUnit2](https://github.com/kward/shunit2/) program installed on your system.
 
-To run the text just execute the following script in the terminal:
+To run the tests execute the following script in the terminal:
 
-```
+```shell
 ./ren.tests.sh
 ```
