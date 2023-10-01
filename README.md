@@ -140,6 +140,25 @@ pet-003.jpg
 
 Also all parameters can be set at the same time, for example `[C10+5:3]`.
 
+## Prefix/suffix files
+
+Original filename can be used in the REPLACEMENT part of the rename regular expression. It can be useful for adding a prefix or a suffix to files. For example, running `ren 's/(.*)/S01E[C1:2] $1/' *.mkv` command for the following files:
+
+```
+Initial_D_First_Stage_-_01_(DVDRip_960x720_x264_AC3).mkv
+Initial_D_First_Stage_-_02_(DVDRip_960x720_x264_AC3).mkv
+Initial_D_First_Stage_-_03_(DVDRip_960x720_x264_AC3).mkv
+```
+
+will prefix all files with TV shows standard naming convention, like this:
+
+```
+S01E01 Initial_D_First_Stage_-_01_(DVDRip_960x720_x264_AC3).mkv
+S01E02 Initial_D_First_Stage_-_02_(DVDRip_960x720_x264_AC3).mkv
+S01E03 Initial_D_First_Stage_-_03_(DVDRip_960x720_x264_AC3).mkv
+
+```
+
 ## To-do
 
 - [ ] Add standard input support (`stdin`).
