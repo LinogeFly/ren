@@ -140,7 +140,9 @@ pet-003.jpg
 
 Also all parameters can be set at the same time, for example `[C10+5:3]`.
 
-## Prefix/suffix files
+## How-to
+
+### Prefix/suffix files
 
 Original filename can be used in the REPLACEMENT part of the rename regular expression. It can be useful for adding a prefix or a suffix to files. For example, running `ren 's/(.*)/S01E[C1:2] $1/' *.mkv` command for the following files:
 
@@ -157,6 +159,14 @@ S01E01 Initial_D_First_Stage_-_01_(DVDRip_960x720_x264_AC3).mkv
 S01E02 Initial_D_First_Stage_-_02_(DVDRip_960x720_x264_AC3).mkv
 S01E03 Initial_D_First_Stage_-_03_(DVDRip_960x720_x264_AC3).mkv
 
+```
+
+### Change files extension
+
+For example, to change files extension form `.jpeg` to `.jpg` run the following command:
+
+```
+ren 's/(.*).jpeg/$1.jpg/' *.jpeg
 ```
 
 ## To-do
